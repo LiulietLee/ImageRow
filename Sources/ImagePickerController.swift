@@ -31,6 +31,8 @@ open class ImagePickerController: UIImagePickerController, TypedRowControllerTyp
     /// The row that pushed or presented this controller
     public var row: RowOf<UIImage>!
     
+    public var ableToEditing = false
+    
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> ())?
     
@@ -41,7 +43,13 @@ open class ImagePickerController: UIImagePickerController, TypedRowControllerTyp
     
     open func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         (row as? ImageRow)?.imageURL = info[UIImagePickerControllerReferenceURL] as? URL
-        row.value = info[UIImagePickerControllerOriginalImage] as? UIImage
+        
+        if ableToEditing {
+            row.value = info[UIImagePickerControllerEditedImage] as? UIImage
+        } else {
+            row.value = info[UIImagePickerControllerOriginalImage] as? UIImage
+        }
+        
         onDismissCallback?(self)
     }
     
@@ -49,3 +57,4 @@ open class ImagePickerController: UIImagePickerController, TypedRowControllerTyp
         onDismissCallback?(self)
     }
 }
+
